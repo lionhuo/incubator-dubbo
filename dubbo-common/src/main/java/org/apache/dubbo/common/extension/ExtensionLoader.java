@@ -464,6 +464,11 @@ public class ExtensionLoader<T> {
         }
     }
 
+    /**
+     * 获取AdaptiveExtensionFactory，每次初始化ExtensionLoader时，
+     * 默认将ExtensionFactory也初始化了
+     * @return
+     */
     @SuppressWarnings("unchecked")
     public T getAdaptiveExtension() {
         Object instance = cachedAdaptiveInstance.get();
@@ -592,6 +597,8 @@ public class ExtensionLoader<T> {
             synchronized (cachedClasses) {
                 classes = cachedClasses.get();
                 if (classes == null) {
+                    //对于ExtensionFactory第一次初始化时将SpiExtensionFactory缓存起来，
+                    //初始化AdaptiveExtensionFactory时将缓存的SpiExtensionFactory加入到AdaptiveExtensionFactory的factory list中
                     classes = loadExtensionClasses();
                     cachedClasses.set(classes);
                 }
@@ -692,7 +699,7 @@ public class ExtensionLoader<T> {
                     type + ", class line: " + clazz.getName() + "), class "
                     + clazz.getName() + "is not subtype of interface.");
         }
-        if (clazz.isAnnotationPresent(Adaptive.class)) {
+        if (clazz.isAnnotationPresent(Adaptive.class)) {//如果有Adaptive标签, 不放入extensionClasses中
             if (cachedAdaptiveClass == null) {
                 cachedAdaptiveClass = clazz;
             } else if (!cachedAdaptiveClass.equals(clazz)) {
