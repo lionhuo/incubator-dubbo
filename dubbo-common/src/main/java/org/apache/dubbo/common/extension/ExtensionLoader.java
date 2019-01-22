@@ -466,7 +466,7 @@ public class ExtensionLoader<T> {
 
     /**
      * 获取AdaptiveExtensionFactory，每次初始化ExtensionLoader时，
-     * 默认将ExtensionFactory也初始化了
+     * 默认将ExtensionFactory也进行初始化
      * @return
      */
     @SuppressWarnings("unchecked")
@@ -781,10 +781,13 @@ public class ExtensionLoader<T> {
     }
 
     private Class<?> getAdaptiveExtensionClass() {
+        //通过 SPI 获取所有的拓展类
+        //在获取实现类的过程中，如果某个实现类被 Adaptive 注解修饰了，那么该类就会被赋值给 cachedAdaptiveClass 变量
         getExtensionClasses();
         if (cachedAdaptiveClass != null) {
             return cachedAdaptiveClass;
         }
+        //如果没有Adaptive注解，将通过字节码生成一个adaptive class
         return cachedAdaptiveClass = createAdaptiveExtensionClass();
     }
 
