@@ -166,9 +166,12 @@ public class ExtensionLoader_Adaptive_Test {
         SimpleExt ext = ExtensionLoader.getExtensionLoader(SimpleExt.class).getAdaptiveExtension();
 
         Map<String, String> map = new HashMap<String, String>();
+        map.put("simple.ext", "impl2");
+        map.put("simple.ext", "impl3");
         URL url = new URL("p1", "1.2.3.4", 1010, "path1", map);
 
         try {
+            System.out.println(ext.echo(url, ""));
             ext.bang(url, 33);
             fail();
         } catch (UnsupportedOperationException expected) {
